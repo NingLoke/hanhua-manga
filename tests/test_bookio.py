@@ -11,6 +11,7 @@ import shutil
 import struct
 import subprocess
 import tarfile
+import tempfile
 import threading
 import zipfile
 import zlib
@@ -105,11 +106,14 @@ def _roundtrip(book: Book, work: Path, fmt: str = "same", image_format: str = "s
 
 
 def _bsdtar_create(src: Path, out: Path, fmt: str) -> None:
-    """用 tar.exe 造压缩包：cwd = 源目录、输出走 stdout（命令行里不出现中文路径）。"""
-    with open(out, "wb") as fo:
-        r = subprocess.run([find_tar(), "-c", "--format", fmt, "-f", "-", "."], cwd=src, stdout=fo,
-                           stderr=subprocess.PIPE, timeout=60, creationflags=_NO_WINDOW)
-    assert r.returncode == 0, r.stderr
+    """7z 写入器需要可 seek 的文件；使用 ASCII 相对路径兼容不同 Windows tar 版本。"""
+    with tempfile.TemporaryDirectory(prefix="bsdtar-", dir=src.parent) as tmp:
+        archive = Path(tmp) / "fixture.archive"
+        r = subprocess.run([find_tar(), "-c", "--format", fmt, "-f", os.path.relpath(archive, src), "."],
+                           cwd=src, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                           timeout=60, creationflags=_NO_WINDOW)
+        assert r.returncode == 0, (r.returncode, r.stderr)
+        shutil.copyfile(archive, out)
 
 
 def _rar4(files: list[tuple[str, bytes]]) -> bytes:
