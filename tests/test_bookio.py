@@ -22,7 +22,7 @@ import pytest
 
 from hanhua import imageio as hio
 from hanhua.bookio import Book, default_output_path, export_book, open_book, scan_inputs
-from hanhua.bookio.archive import find_tar
+from hanhua.bookio.archive import find_7z, find_tar
 from hanhua.bookio.epub import EpubBook
 from hanhua.bookio.pdf import PdfBook
 from hanhua.types import Cancelled, HanhuaError, UnsupportedFormat
@@ -106,10 +106,13 @@ def _roundtrip(book: Book, work: Path, fmt: str = "same", image_format: str = "s
 
 
 def _bsdtar_create(src: Path, out: Path, fmt: str) -> None:
-    """7z 写入器需要可 seek 的文件；使用 ASCII 相对路径兼容不同 Windows tar 版本。"""
+    """优先用 7-Zip 生成 7z；部分 Windows 自带 tar 的 7z 写入器会直接崩溃。"""
     with tempfile.TemporaryDirectory(prefix="bsdtar-", dir=src.parent) as tmp:
         archive = Path(tmp) / "fixture.archive"
-        r = subprocess.run([find_tar(), "-c", "--format", fmt, "-f", os.path.relpath(archive, src), "."],
+        relative = os.path.relpath(archive, src)
+        seven = find_7z() if fmt == "7zip" else None
+        args = [seven, "a", "-t7z", relative, "."] if seven else [find_tar(), "-c", "--format", fmt, "-f", relative, "."]
+        r = subprocess.run(args,
                            cwd=src, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                            timeout=60, creationflags=_NO_WINDOW)
         assert r.returncode == 0, (r.returncode, r.stderr)
