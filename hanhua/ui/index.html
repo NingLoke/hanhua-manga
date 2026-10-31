@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>一键汉化漫画 4.0.5</title>
+<script>
+  // 首帧前确定主题，避免白屏闪烁（?theme= 优先，其次上次记住的主题，最后跟随系统）
+  (function () {
+    var q = new URLSearchParams(location.search).get("theme"), t = q;
+    try { t = t || localStorage.getItem("hanhua.theme"); } catch (e) {}
+    if (!t || t === "auto") t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", t);
+    if (new URLSearchParams(location.search).has("shot")) document.documentElement.classList.add("no-anim");
+  })();
+</script>
+<link rel="stylesheet" href="app.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<!-- 图标库：不能用 display:none（Chromium 里 display:none 的 SVG 中的渐变不会渲染，Logo 会变透明） -->
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="g-brand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8b7bff"/><stop offset=".55" stop-color="#6a5cff"/><stop offset="1" stop-color="#ff6fae"/>
+    </linearGradient>
+  </defs>
+  <symbol id="i-tasks" viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="6.5" rx="2"/><rect x="3.5" y="13.5" width="17" height="6.5" rx="2"/><path d="M7 7.25h5M7 16.75h7"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4.2L19.3 8.9a2.6 2.6 0 0 0-3.7-3.7L4.5 16.3 4 20z"/><path d="M14 6.8l3.6 3.6"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H19v15H7.5A2.5 2.5 0 0 0 5 20.5v-15z"/><path d="M5 20.5A2.5 2.5 0 0 1 7.5 18H19v3H7.5M9 7.5h6M9 11h4"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6.5h9M17 6.5h3M4 12h3M11 12h9M4 17.5h11M19 17.5h1"/><circle cx="15" cy="6.5" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="17.5" r="2"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8v.1"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.8v12.4a.8.8 0 0 0 1.2.7l9.6-6.2a.8.8 0 0 0 0-1.4L9.2 5.1A.8.8 0 0 0 8 5.8z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect fill="currentColor" stroke="none" x="6.5" y="5" width="3.6" height="14" rx="1"/><rect fill="currentColor" stroke="none" x="13.9" y="5" width="3.6" height="14" rx="1"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect fill="currentColor" stroke="none" x="6" y="6" width="12" height="12" rx="2.5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3.5 7.5A2 2 0 0 1 5.5 5.5h3.8l2 2h7.2a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-9.5z"/></symbol>
+  <symbol id="i-folder-plus" viewBox="0 0 24 24"><path d="M3.5 7.5A2 2 0 0 1 5.5 5.5h3.8l2 2h7.2a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-9.5z"/><path d="M12 11v5M9.5 13.5h5"/></symbol>
+  <symbol id="i-file-plus" viewBox="0 0 24 24"><path d="M14 3.5H7.5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V8z"/><path d="M14 3.5V8h4.5M12 11.5v5M9.5 14h5"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4.5h5.5V10M19.5 4.5l-8 8M18 14v3.5a2 2 0 0 1-2 2H6.5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2H10"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M19.5 11A7.5 7.5 0 0 0 6.2 6.6L4.5 8.3M4.5 4.5v3.8h3.8M4.5 13a7.5 7.5 0 0 0 13.3 4.4l1.7-1.7M19.5 19.5v-3.8h-3.8"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 19.5v-11M7.5 13L12 8.5l4.5 4.5M5 4.5h14"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 7h15M10 11v6M14 11v6M6.5 7l.9 11.6a2 2 0 0 0 2 1.9h5.2a2 2 0 0 0 2-1.9L17.5 7M9.5 7V4.5h5V7"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8.2 12.4l2.6 2.6 5-5.2"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 4.6L2.9 17.5A2 2 0 0 0 4.6 20.5h14.8a2 2 0 0 0 1.7-3L13.7 4.6a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4.2M12 16.8v.1"/></symbol>
+  <symbol id="i-alert-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.3v.1"/></symbol>
+  <symbol id="i-chev-l" viewBox="0 0 24 24"><path d="M14.5 6l-6 6 6 6"/></symbol>
+  <symbol id="i-chev-r" viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6"/></symbol>
+  <symbol id="i-chev-d" viewBox="0 0 24 24"><path d="M6 9.5l6 6 6-6"/></symbol>
+  <symbol id="i-zoom-in" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.4-4.4M11 8.2v5.6M8.2 11h5.6"/></symbol>
+  <symbol id="i-zoom-out" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.4-4.4M8.2 11h5.6"/></symbol>
+  <symbol id="i-fit" viewBox="0 0 24 24"><path d="M4.5 9V4.5H9M19.5 9V4.5H15M4.5 15v4.5H9M19.5 15v4.5H15"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.8"/><path d="M12 2.8v2M12 19.2v2M5.5 5.5l1.4 1.4M17.1 17.1l1.4 1.4M2.8 12h2M19.2 12h2M5.5 18.5l1.4-1.4M17.1 6.9l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.6A7.8 7.8 0 0 1 9.4 4.5a7.8 7.8 0 1 0 10.1 10.1z"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="11.5" rx="2"/><path d="M8.5 19.5h7M12 16v3.5"/></symbol>
+  <symbol id="i-chip" viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="2"/><rect x="9.8" y="9.8" width="4.4" height="4.4" rx=".8"/><path d="M9.5 3v3.5M14.5 3v3.5M9.5 17.5V21M14.5 17.5V21M3 9.5h3.5M3 14.5h3.5M17.5 9.5H21M17.5 14.5H21"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13.2 3L5.5 13.4h5.8L10.8 21l7.7-10.4h-5.8z"/></symbol>
+  <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4.4 17.5a8.5 8.5 0 1 1 15.2 0"/><path d="M12 13.5l3.6-3.6"/><circle cx="12" cy="13.8" r="1.2"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M11 3.5l1.7 4.6 4.6 1.7-4.6 1.7L11 16.1l-1.7-4.6-4.6-1.7 4.6-1.7z"/><path d="M18 14l.8 2.2 2.2.8-2.2.8L18 20l-.8-2.2-2.2-.8 2.2-.8z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5.5v13M5.5 12h13"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.4-4.4"/></symbol>
+  <symbol id="i-grip" viewBox="0 0 24 24"><path d="M9 6.5v.1M15 6.5v.1M9 12v.1M15 12v.1M9 17.5v.1M15 17.5v.1" stroke-width="2.8"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 18.5v-13M6.5 11L12 5.5l5.5 5.5"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5.5v13M6.5 13l5.5 5.5 5.5-5.5"/></symbol>
+  <symbol id="i-translate" viewBox="0 0 24 24"><path d="M3.5 5.5h9M8 3.5v2M5.5 5.5c.9 3.2 3 5.6 6 7M10.5 5.5c-.8 3.3-2.9 5.8-6 7.3"/><path d="M12.5 20.5l4-9.5 4 9.5M14 17h5"/></symbol>
+  <symbol id="i-scan" viewBox="0 0 24 24"><path d="M4 8.5V6.5A2.5 2.5 0 0 1 6.5 4h2M15.5 4h2A2.5 2.5 0 0 1 20 6.5v2M20 15.5v2a2.5 2.5 0 0 1-2.5 2.5h-2M8.5 20h-2A2.5 2.5 0 0 1 4 17.5v-2M8 12h8"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="M20.5 16l-4.8-4.8-9 8.3"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3.5l8.5 4.7L12 13 3.5 8.2z"/><path d="M3.5 12.5L12 17.3l8.5-4.8M3.5 16.6L12 21.4l8.5-4.8"/></symbol>
+  <symbol id="i-type" viewBox="0 0 24 24"><path d="M5 7V4.5h14V7M12 4.5v15M9 19.5h6"/></symbol>
+  <symbol id="i-file-text" viewBox="0 0 24 24"><path d="M14 3.5H7.5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V8z"/><path d="M14 3.5V8h4.5M9 12.5h6M9 16h6"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3.5l7.5 2.8v5.6c0 4.3-3.1 7.9-7.5 8.6-4.4-.7-7.5-4.3-7.5-8.6V6.3z"/><path d="M9 12l2.2 2.2L15.3 10"/></symbol>
+  <symbol id="i-keyboard" viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6.5 10h.1M10 10h.1M13.5 10h.1M17 10h.1M7.5 14h9"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M5.5 3.5h10.2l3.8 3.8v11.2a2 2 0 0 1-2 2h-12a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2z"/><path d="M8 3.5v4.5h7V3.5M7.5 20.5v-6h9v6"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14.5L4.5 10 9 5.5"/><path d="M4.5 10h10a5 5 0 0 1 0 10h-3"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24"><path d="M8 12.5V6a1.5 1.5 0 0 1 3 0v5.5M11 11V4.8a1.5 1.5 0 0 1 3 0V11M14 11V6a1.5 1.5 0 0 1 3 0v7.5c0 4-2.6 7-6.3 7-2.4 0-4-1-5.3-3L3.5 14a1.6 1.6 0 0 1 2.6-1.8L8 14.5"/></symbol>
+  <symbol id="i-compare" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M12 3v18M8 9.5l-2 2.5 2 2.5M16 9.5l2 2.5-2 2.5"/></symbol>
+  <symbol id="i-dots" viewBox="0 0 24 24"><path d="M6 12v.1M12 12v.1M18 12v.1" stroke-width="3"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6.5a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h2"/></symbol>
+  <symbol id="i-logo" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="url(#g-brand)" stroke="none"/><path d="M8.5 10.8c0-1.8 1.5-3.3 3.3-3.3h8.4c1.8 0 3.3 1.5 3.3 3.3v5.6c0 1.8-1.5 3.3-3.3 3.3h-4.6l-4.2 3.6v-3.6h0c-1.6-.2-2.9-1.6-2.9-3.3v-5.6z" fill="#fff" stroke="none"/><path d="M12.6 12.2h6.8M16 10.4v1.8M13.4 12.2c.6 2.2 1.9 3.7 3.9 4.6M18.6 12.2c-.6 2.3-1.9 3.9-4.1 4.9" stroke="#6a5cff" stroke-width="1.5" fill="none"/></symbol>
+</svg>
+
+<div class="app" id="app">
+  <header class="topbar">
+    <div class="brand">
+      <svg class="brand-logo"><use href="#i-logo"/></svg>
+      <span class="brand-name">一键汉化漫画</span>
+      <span class="brand-ver">4.0.5</span>
+      <span class="demo-badge" id="demoBadge" hidden>演示模式</span>
+    </div>
+    <div class="topbar-right">
+      <button class="hw-chip" id="hwChip" data-tip="硬件加速" data-act="go-about">
+        <span class="hw-dot"></span><svg class="ico"><use href="#i-chip"/></svg><span id="hwChipText">正在识别硬件…</span>
+      </button>
+      <div class="seg seg-sm" id="profileSeg" role="radiogroup" aria-label="画质档位">
+        <button data-v="fast" data-tip="最快：小模型 + 较低修复分辨率"><svg class="ico"><use href="#i-bolt"/></svg>极速</button>
+        <button data-v="balanced" data-tip="速度与画质兼顾（推荐）"><svg class="ico"><use href="#i-gauge"/></svg>均衡</button>
+        <button data-v="quality" data-tip="最好画质：大模型 + 高分辨率修复"><svg class="ico"><use href="#i-sparkle"/></svg>高质量</button>
+      </div>
+      <button class="btn-icon" id="themeBtn" data-tip="外观：跟随系统"><svg class="ico"><use href="#i-monitor"/></svg></button>
+    </div>
+  </header>
+
+  <nav class="sidebar" id="sidebar">
+    <a class="nav-item" href="#/tasks" data-route="tasks"><svg class="ico"><use href="#i-tasks"/></svg><span class="nav-label">任务</span><span class="nav-badge" id="navTaskBadge" hidden>0</span></a>
+    <a class="nav-item" href="#/editor" data-route="editor"><svg class="ico"><use href="#i-edit"/></svg><span class="nav-label">校对</span></a>
+    <a class="nav-item" href="#/glossary" data-route="glossary"><svg class="ico"><use href="#i-book"/></svg><span class="nav-label">术语表</span><span class="nav-badge muted" id="navGlossBadge" hidden>0</span></a>
+    <a class="nav-item" href="#/settings" data-route="settings"><svg class="ico"><use href="#i-sliders"/></svg><span class="nav-label">设置</span></a>
+    <a class="nav-item" href="#/about" data-route="about"><svg class="ico"><use href="#i-info"/></svg><span class="nav-label">关于</span></a>
+    <div class="side-spacer"></div>
+    <div class="engine-card" id="engineCard">
+      <div class="engine-row"><span class="engine-dot" id="engineDot"></span><span class="engine-state" id="engineState">空闲</span></div>
+      <div class="engine-sub" id="engineSub">拖入漫画即可开始</div>
+      <div class="mini-progress"><div class="mini-fill" id="engineFill"></div></div>
+      <button class="btn btn-sm btn-block" id="engineToggle" data-act="toggle-engine"><svg class="ico"><use href="#i-pause"/></svg><span>全部暂停</span></button>
+    </div>
+  </nav>
+
+  <main class="main" id="main">
+    <div class="conn-banner" id="connBanner" hidden><span class="spinner sm"></span>与后台的连接已断开，正在重新连接…</div>
+    <div class="engine-banner" id="engineBanner" hidden></div>
+    <section class="view" data-view="tasks" id="view-tasks"></section>
+    <section class="view" data-view="editor" id="view-editor"></section>
+    <section class="view" data-view="glossary" id="view-glossary"></section>
+    <section class="view" data-view="settings" id="view-settings"></section>
+    <section class="view" data-view="about" id="view-about"></section>
+  </main>
+</div>
+
+<div class="drop-overlay" id="dropOverlay" hidden>
+  <div class="drop-overlay-box">
+    <div class="drop-overlay-icon"><svg class="ico"><use href="#i-upload"/></svg></div>
+    <div class="drop-overlay-title">松开鼠标，开始汉化</div>
+    <div class="drop-overlay-sub">支持文件夹、图片、压缩包、PDF、EPUB，可以一次拖入多本</div>
+  </div>
+</div>
+
+<div class="modal-root" id="modalRoot" hidden></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div class="tooltip" id="tooltip" role="tooltip" hidden></div>
+<div class="js-errors" id="jsErrors" hidden></div>
+<input type="file" id="fileInput" multiple hidden>
+<input type="file" id="csvInput" accept=".csv,.tsv,.txt" hidden>
+<noscript><div class="noscript">界面需要启用 JavaScript 才能运行。</div></noscript>
+</body>
+</html>

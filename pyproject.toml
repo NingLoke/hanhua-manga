@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hanhua-manga"
+version = "4.0.5"
+description = "一键汉化漫画：检测、OCR、翻译、背景修复与中文排版的 Windows 桌面工具"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+authors = [{name = "NingLoke"}]
+dependencies = [
+  "numpy>=2.0,<3",
+  "opencv-python-headless>=4.10,<6",
+  "pillow>=11,<14",
+  "requests>=2.32,<3",
+  "jaconv>=0.4,<1",
+  "pypdfium2>=4.30,<6",
+  "pywebview>=6.2,<7; sys_platform == 'win32'",
+]
+
+[project.optional-dependencies]
+cpu = ["onnxruntime>=1.20,<2"]
+dml = ["onnxruntime-directml>=1.20,<2; sys_platform == 'win32'"]
+cuda = ["onnxruntime-gpu[cuda,cudnn]>=1.24,<2; sys_platform == 'win32'"]
+dev = ["pytest>=8,<10"]
+build = ["pyinstaller>=6.11,<7"]
+
+[project.scripts]
+hanhua = "hanhua.app:main"
+
+[project.urls]
+Homepage = "https://github.com/NingLoke/hanhua-manga"
+Issues = "https://github.com/NingLoke/hanhua-manga/issues"
+
+[tool.setuptools.packages.find]
+include = ["hanhua*"]
+
+[tool.setuptools.package-data]
+"hanhua.ui" = ["*.html", "*.css", "*.js"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

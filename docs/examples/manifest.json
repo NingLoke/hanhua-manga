@@ -1,0 +1,38 @@
+[
+  {
+    "file": "008-before.jpg",
+    "sha256": "27b8b8c0efbf4d5c257764bd6068f34e04ffd6c0c9303f3625afb05a5246b896",
+    "size": [
+      1140,
+      1600
+    ],
+    "bytes": 476382
+  },
+  {
+    "file": "008-after.jpg",
+    "sha256": "9575f5b26c954cb28e28e1c8c9f37d22abaf46e28af500eb33b320a5edd0e444",
+    "size": [
+      1140,
+      1600
+    ],
+    "bytes": 261822
+  },
+  {
+    "file": "011-before.jpg",
+    "sha256": "4fe1377f7175a40a587f78b3175564cc6aed14852216da9613b7f2355fd92e1c",
+    "size": [
+      1140,
+      1600
+    ],
+    "bytes": 227993
+  },
+  {
+    "file": "011-after.jpg",
+    "sha256": "e51842a43226d6ec8ed30fcb6d1cd0de7961d001883643b759236aa901be66e4",
+    "size": [
+      1140,
+      1600
+    ],
+    "bytes": 111283
+  }
+]

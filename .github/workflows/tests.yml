@@ -1,0 +1,32 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-cpu:
+    runs-on: windows-latest
+    env:
+      HANHUA_OFFLINE: "1"
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install project
+        run: python -m pip install -e ".[cpu,dev]"
+      - name: Download open fonts
+        run: python -X utf8 build/fetch_assets.py --only fonts
+      - name: Offline regression tests
+        run: python -X utf8 -m pytest tests -m "not network" -q
+      - name: UI job events
+        run: node --test tests/test_job_events.cjs
